@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import store from '@/app/store';
 import { QueryClient, QueryClientProvider } from '@blitzjs/rpc';
 import { BlitzProvider } from './blitz-client';
+import { ToastContainer } from 'react-toastify';
 
 const queryClient = new QueryClient();
 export default function RootLayout({
@@ -27,14 +28,14 @@ export default function RootLayout({
 					<Provider store={store}>
 						<QueryClientProvider client={queryClient}>
 							<BlitzProvider>
-								{/*<PersistGate loading={null} persistor={persistor}>*/}
-								{/*<div className='root'>*/}
-								{/*	<Header />*/}
-								{/*	<div className='wrapper-page'>{children}</div>*/}
-								{/*	<Footer />*/}
-								{/*</div>*/}
 								<AppLayout>{children}</AppLayout>
-								{/*</PersistGate>*/}
+								<ToastContainer
+									position='bottom-right'
+									autoClose={3000}
+									hideProgressBar={false}
+									pauseOnHover
+									theme='dark'
+								/>
 							</BlitzProvider>
 						</QueryClientProvider>
 					</Provider>

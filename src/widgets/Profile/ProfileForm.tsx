@@ -93,10 +93,7 @@ export const ProfileForm = ({ initialData, onSubmit }: ProfileFormProps) => {
 							<Button
 								view='primary'
 								label='Изменить информацию'
-								onClick={() => {
-									console.log('dsfdsfds');
-									setIsEditing(true);
-								}}
+								onClick={() => setIsEditing(true)}
 								type='button'
 							/>
 							<Button

@@ -27,7 +27,7 @@ const ClientProfilePage = () => {
 			toast.success('Профиль успешно обновлен');
 			return true;
 		} catch (error) {
-			if (error.code === 'P2002' && error.meta?.target?.includes('email')) {
+			if (error.message === 'Email already in use') {
 				toast.error('Этот email уже используется');
 			} else {
 				toast.error('Ошибка при обновлении профиля');
