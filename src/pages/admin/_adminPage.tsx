@@ -25,17 +25,15 @@ const AdminPage = () => {
 			const updatedUser = await updateProfileMutation(data);
 			setUserData(updatedUser);
 			toast.success('Профиль успешно обновлен');
-			return true; // Возвращаем true для индикации успешного обновления
+			return true;
 		} catch (error) {
 			if (error.code === 'P2002' && error.meta?.target?.includes('email')) {
 				toast.error('Этот email уже используется');
 			} else {
 				toast.error('Ошибка при обновлении профиля');
 			}
-			return false; // Возвращаем false при ошибке
 		}
 	};
-
 	if (!userData) {
 		return <Loader visible={true} />;
 	}

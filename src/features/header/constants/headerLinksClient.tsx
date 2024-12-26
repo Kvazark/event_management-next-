@@ -7,7 +7,7 @@ export const headerLinksClient: THeaderLinks[] = [
 		icon: <CalendarIcon />,
 	},
 	{
-		link: '/client',
+		link: '/client/profile',
 		icon: <ProfileClientIcon />,
 	},
 ];
