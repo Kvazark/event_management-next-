@@ -11,6 +11,8 @@ import EventsIcon from './headerIcons/uil_podium.svg';
 import ManagerEventsIcon from './headerIcons/uil_wrench.svg';
 import ExitIcon from './headerIcons/uil_exit.svg';
 
+import FilterIcon from './functionalIcons/uil_filter.svg';
+
 ///header icons
 export {
 	AccountIcon,
@@ -24,3 +26,5 @@ export {
 };
 ///navigation icons
 export { LeftArrowIcon, RightArrowIcon, ThreeDotsVertical };
+///functional icons
+export { FilterIcon };

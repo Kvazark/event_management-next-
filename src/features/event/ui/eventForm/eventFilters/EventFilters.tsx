@@ -1,7 +1,8 @@
-import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { Box } from '@mui/material';
 import { Button } from '@/shared/components';
 import { useQuery } from '@blitzjs/rpc';
 import getAllCategories from '@/features/event/api/queries/getAllCategories';
+import { CategoryFilterDropdown } from './CategoryFilterDropdown';
 
 type EventFiltersProps = {
 	selectedCategories: string[];
@@ -21,38 +22,11 @@ export const EventFilters = ({
 
 	return (
 		<Box sx={{ display: 'flex', gap: 2, mb: 3, alignItems: 'center' }}>
-			<FormControl sx={{ minWidth: 200 }}>
-				<InputLabel>Категории</InputLabel>
-				<Select
-					multiple
-					value={selectedCategories}
-					onChange={(e) => onCategoriesChange(e.target.value as string[])}
-					label='Категории'
-					sx={{
-						'& .MuiSelect-select': {
-							color: 'var(--white-color)',
-						},
-						'& .MuiOutlinedInput-notchedOutline': {
-							borderColor: 'var(--custom-gray)',
-						},
-						'&:hover .MuiOutlinedInput-notchedOutline': {
-							borderColor: 'var(--white-color)',
-						},
-						'&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-							borderColor: 'var(--white-color)',
-						},
-					}}>
-					{categories.length > 0 ? (
-						categories.map((category) => (
-							<MenuItem key={category.id} value={category.id}>
-								{category.title}
-							</MenuItem>
-						))
-					) : (
-						<MenuItem disabled>No categories available</MenuItem>
-					)}
-				</Select>
-			</FormControl>
+			<CategoryFilterDropdown
+				categories={categories}
+				selectedCategories={selectedCategories}
+				onCategoryChange={onCategoriesChange}
+			/>
 
 			<Button
 				view='outlined-on-dark'

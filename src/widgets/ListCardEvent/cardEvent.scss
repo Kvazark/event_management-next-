@@ -6,6 +6,12 @@
 	gap: 42px;
 	flex: 1;
 
+	&_container{
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
 	&_cards {
 		display: grid;
 		min-height: 940px;

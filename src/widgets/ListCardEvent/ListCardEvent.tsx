@@ -1,15 +1,11 @@
 'use client';
 import './cardEvent.scss';
 import { CardEvent } from '@/widgets';
-import { eventsMocks } from '@/shared/api/mocks';
-import { Pagination, PaginationItem, useMediaQuery } from '@mui/material';
+import { Box, Pagination, PaginationItem, useMediaQuery } from '@mui/material';
 import { ChangeEvent, Suspense, useEffect, useState } from 'react';
-import { IEvent } from '@/entities/event';
 import { Button, Loader } from '@/shared/components';
-import { usePagination } from '@/shared/hooks/usePagination';
 import { LeftArrowIcon, RightArrowIcon } from '@/shared/icons';
 import { useQuery } from '@blitzjs/rpc';
-import getEvents from '@/features/event/api/queries/getEvents';
 import { EventFilters } from '@/features/event/ui/eventForm';
 import getEventsWithFilters from '@/features/event/api/queries/getEventsWithFilters';
 
@@ -42,19 +38,21 @@ export const ListCardEvent = () => {
 
 	return (
 		<Suspense fallback={<Loader visible={true} />}>
-			<div className='card-list-wrapper'>
-				<EventFilters
-					selectedCategories={selectedCategories}
-					sortOrder={sortOrder}
-					onCategoriesChange={setSelectedCategories}
-					onSortChange={setSortOrder}
-				/>
+			<Box className='card-list-wrapper'>
+				<Box className='card-list-wrapper_container'>
+					<EventFilters
+						selectedCategories={selectedCategories}
+						sortOrder={sortOrder}
+						onCategoriesChange={setSelectedCategories}
+						onSortChange={setSortOrder}
+					/>
 
-				<div className='card-list-wrapper_cards'>
-					{events.map((item, index) => (
-						<CardEvent event={item} key={`${index}-card`} />
-					))}
-				</div>
+					<Box className='card-list-wrapper_cards'>
+						{events.map((item, index) => (
+							<CardEvent event={item} key={`${index}-card`} />
+						))}
+					</Box>
+				</Box>
 
 				{totalPages > 1 && (
 					<Pagination
@@ -89,7 +87,7 @@ export const ListCardEvent = () => {
 						)}
 					/>
 				)}
-			</div>
+			</Box>
 		</Suspense>
 	);
 };

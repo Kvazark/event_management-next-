@@ -1,0 +1,19 @@
+.containerBtn {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	width: fit-content;
+	height: 24px;
+}
+
+.container{
+	svg path {
+		fill: var(--white-color);
+	};
+
+	&:hover{
+		svg path {
+			fill: var(--white-color) !important;
+		};
+	}
+}
