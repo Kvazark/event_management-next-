@@ -1,28 +1,25 @@
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
 import { Badge } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '@/shared/hooks/storeHooks';
-import {
-	selectedDateActions,
-	selectedDateSelectors,
-} from '@/app/store/slices/selectedDate';
+
+type HighlightedCalendarDaysProps = PickersDayProps<Dayjs> & {
+	highlightedDays?: string[];
+	onDateClick?: (date: string) => void;
+};
 
 export const HighlightedCalendarDays = (
-	props: PickersDayProps<Dayjs> & {
-		highlightedDays?: string[];
-	}
+	props: HighlightedCalendarDaysProps
 ) => {
-	const dispatch = useAppDispatch();
-	const { highlightedDays = [], day, ...other } = props;
+	const { highlightedDays = [], day, onDateClick, ...other } = props;
 
-	const isHighlighted = highlightedDays.includes(day.format('YYYY-MM-DD'));
+	const formattedDate = day.format('YYYY-MM-DD');
+	const isHighlighted = highlightedDays.includes(formattedDate);
+
 	const handleClick = () => {
-		if (isHighlighted) {
-			dispatch(selectedDateActions.setSelectedDate(day.format('DD.MM.YYYY')));
+		if (isHighlighted && onDateClick) {
+			onDateClick(formattedDate);
 		}
 	};
-	const currentDate = useAppSelector(selectedDateSelectors.getSelectedDate);
-	console.log(currentDate);
 
 	return (
 		<Badge
