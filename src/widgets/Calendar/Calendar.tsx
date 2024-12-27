@@ -9,11 +9,7 @@ import { formatDateToString } from '@/shared/utils/formatDateToString';
 import { HighlightedCalendarDays } from '@/features/calendar/ui';
 import { useQuery } from '@blitzjs/rpc';
 import getUserEvents from '@/features/event/api/queries/getUserEvents';
-import { CardEvent } from '@/widgets';
-
-type TCalendarProps = {
-	onSelectEvent?: (data: string | Date) => void;
-};
+import { DrawerCardEvent } from '@/widgets/Calendar/ui/DrawerCardEvent';
 
 export const Calendar = () => {
 	const [selectedEvent, setSelectedEvent] = useState(null);
@@ -68,7 +64,7 @@ export const Calendar = () => {
 							padding: '20px',
 						},
 					}}>
-					{selectedEvent && <CardEvent event={selectedEvent} />}
+					{selectedEvent && <DrawerCardEvent selectedEvent={selectedEvent} />}
 				</Drawer>
 			</Box>
 		</LocalizationProvider>
