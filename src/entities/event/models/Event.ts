@@ -12,4 +12,5 @@ export interface IEvent {
 	description?: string;
 	image: string;
 	categories: ICategory[];
+	authors: IAuthor[];
 }
