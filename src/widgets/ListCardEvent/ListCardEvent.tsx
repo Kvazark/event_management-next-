@@ -3,15 +3,26 @@ import './cardEvent.scss';
 import { CardEvent } from '@/widgets';
 import { eventsMocks } from '@/shared/api/mocks';
 import { Pagination, PaginationItem, useMediaQuery } from '@mui/material';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { IEvent } from '@/entities/event';
 import { Button } from '@/shared/components';
 import { usePagination } from '@/shared/hooks/usePagination';
 import { LeftArrowIcon, RightArrowIcon } from '@/shared/icons';
+import { useQuery } from '@blitzjs/rpc';
+import getEvents from '@/features/event/api/queries/getEvents';
 
 export const ListCardEvent = () => {
+	const [events, setEvents] = useState<IEvent[]>([]);
+	const [eventsQuery] = useQuery(getEvents, null);
+
+	useEffect(() => {
+		if (eventsQuery) {
+			setEvents(eventsQuery);
+		}
+	}, [eventsQuery]);
+
 	const { currentPage, getCurrentData, setPagePaginated, countPages } =
-		usePagination<IEvent>(eventsMocks, 6);
+		usePagination<IEvent>(events, 6);
 
 	function handlePageChange(_: ChangeEvent<unknown>, page: number) {
 		setPagePaginated(page);

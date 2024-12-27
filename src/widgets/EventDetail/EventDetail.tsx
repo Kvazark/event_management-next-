@@ -15,12 +15,10 @@ export const findEventById = (events: IEvent[], id: string) => {
 };
 
 type TEventDetailProps = {
-	idEvent: string;
+	event: IEvent;
 };
 
-export const EventDetail = ({ idEvent }: TEventDetailProps) => {
-	const event = findEventById(eventsMocks, idEvent);
-
+export const EventDetail = ({ event }: TEventDetailProps) => {
 	const textTitle = [
 		`Присоединяйтесь к нам на конференции ${event?.title}!`,
 		'Это уникальная возможность для educators, исследователей, студентов и всех, кто заинтересован в будущем образования, собраться вместе, поделиться идеями и обсудить последние тренды и технологии, которые меняют образовательный ландшафт.',

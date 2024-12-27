@@ -6,31 +6,21 @@ const GetEventById = z.object({
 	id: z.string(),
 });
 
-export default resolver.pipe(
-	resolver.zod(GetEventById),
-	resolver.authorize(),
-	async ({ id }, ctx) => {
-		const userId = ctx.session.userId;
-		if (!userId) throw new Error('Not authenticated');
+export default resolver.pipe(resolver.zod(GetEventById), async ({ id }) => {
+	const event = await db.event.findUnique({
+		where: { id },
+		include: {
+			format: true,
+			categories: true,
+			authors: true,
+			participants: true,
+			createdBy: true,
+		},
+	});
 
-		const event = await db.event.findUnique({
-			where: {
-				id,
-				OR: [{ createdIdBy: userId }, { authors: { some: { id: userId } } }],
-			},
-			include: {
-				format: true,
-				categories: true,
-				authors: true,
-				participants: true,
-				createdBy: true,
-			},
-		});
-
-		if (!event) {
-			throw new Error('Event not found or you are not authorized to view it');
-		}
-
-		return event;
+	if (!event) {
+		throw new Error('Событие не найдено');
 	}
-);
+
+	return event;
+});
