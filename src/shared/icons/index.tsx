@@ -12,6 +12,7 @@ import ManagerEventsIcon from './headerIcons/uil_wrench.svg';
 import ExitIcon from './headerIcons/uil_exit.svg';
 
 import FilterIcon from './functionalIcons/uil_filter.svg';
+import PlusCircleIcon from './functionalIcons/uil_plus-circle.svg';
 
 ///header icons
 export {
@@ -27,4 +28,4 @@ export {
 ///navigation icons
 export { LeftArrowIcon, RightArrowIcon, ThreeDotsVertical };
 ///functional icons
-export { FilterIcon };
+export { FilterIcon, PlusCircleIcon };

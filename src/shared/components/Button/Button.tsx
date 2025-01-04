@@ -86,9 +86,15 @@ export const CustomButton = ({
 					color: 'var(--accent-color)',
 					background: 'transparent',
 					padding: '0',
-					minWidth: '16px		',
+					minWidth: '16px',
+					'svg path': {
+						fill: 'var(--accent-color)',
+					},
 					'&:hover': {
 						color: 'var(--accent-color-secondary)',
+						'svg path': {
+							fill: 'var(--accent-light-color)',
+						},
 					},
 				};
 			case 'link':
