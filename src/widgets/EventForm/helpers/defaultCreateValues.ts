@@ -4,7 +4,7 @@ export const defaultCreateValues = {
 	endDate: new Date(Date.now() + 3600000),
 	formatType: '' as 'онлайн' | 'офлайн' | 'гибрид',
 	description: '',
-	image: '',
+	image: null,
 	categoryIds: [],
 	authorIds: [],
 };

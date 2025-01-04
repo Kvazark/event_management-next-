@@ -86,13 +86,11 @@ export const ChangePasswordModal = ({
 				currentPassword: currentPassword,
 				newPassword: data.newPassword,
 			});
-			console.log('ds');
 			toast.success('Пароль успешно изменен');
 			handleClose();
 			resetStep1();
 			resetStep2();
 		} catch (error) {
-			console.log('.....................');
 			let errorMessage = 'Не удалось изменить пароль';
 			if (error instanceof Error) {
 				if (error.message === 'Current password is incorrect') {
@@ -102,7 +100,7 @@ export const ChangePasswordModal = ({
 				}
 			}
 			toast.error(errorMessage);
-			setStep(1); // Return to first step on error
+			setStep(1);
 		} finally {
 			setIsLoading(false);
 		}

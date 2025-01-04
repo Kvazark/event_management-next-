@@ -20,7 +20,6 @@ export const EventDetailPage = () => {
 	const id = params?.id as string;
 	const [event, { isLoading }] = useQuery(getEventById, { id });
 	const [registerForEventMutation] = useMutation(registerForEvent);
-	console.log(session);
 
 	const handleRegister = async () => {
 		try {

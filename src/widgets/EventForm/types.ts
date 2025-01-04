@@ -8,7 +8,7 @@ export type EventFormData = {
 	link?: string;
 	address?: string;
 	description?: string;
-	image: string;
+	image: string | File | null;
 	categoryIds: string[];
 	authorIds: string[];
 };

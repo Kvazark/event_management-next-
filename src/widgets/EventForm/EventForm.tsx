@@ -20,8 +20,8 @@ import {
 import { EventFormData, TEventFormProps } from './types';
 import { defaultCreateValues } from './helpers/defaultCreateValues';
 import { formatValidation } from './helpers/formatValidation';
-import s from './styled.module.scss';
-import searchAdmins from '@/features/user/api/queries/searchAdmins';
+import s from './ui/styled.module.scss';
+import { FileUploadForm } from './ui/FileUploadField';
 
 export const EventForm = ({
 	initialData,
@@ -52,9 +52,6 @@ export const EventForm = ({
 			if (Array.isArray(initialData.categoryIds)) {
 				setValue('categoryIds', initialData.categoryIds);
 			}
-			// if (Array.isArray(initialData.authorIds)) {
-			// 	setValue('authorIds', initialData.authorIds);
-			// }
 		}
 	}, [initialData, categories]);
 
@@ -78,28 +75,49 @@ export const EventForm = ({
 			toast.error('Неправильно заполнены поля формата');
 			return;
 		}
+
+		// Проверка наличия файла
+		if (!data.image && !initialData?.image) {
+			toast.error('Пожалуйста, загрузите изображение');
+			return;
+		}
+
 		try {
+			let imageUrl = initialData?.image || '';
+			// Загрузка изображения
+			if (data.image instanceof File) {
+				const formData = new FormData();
+				formData.append('file', data.image);
+
+				const uploadResponse = await fetch('/api/upload', {
+					method: 'POST',
+					body: formData,
+				});
+
+				if (!uploadResponse.ok) {
+					throw new Error('Ошибка при загрузке изображения');
+				}
+
+				const { url } = await uploadResponse.json();
+				imageUrl = url;
+			}
+
 			const formattedData = {
 				...data,
 				startDate: new Date(data.startDate),
 				endDate: new Date(data.endDate),
 				authorIds: selectedAdmins.map((admin) => admin.id),
+				image: imageUrl,
 			};
 
-			if (externalSubmit) {
-				await externalSubmit(formattedData);
-			} else {
-				await createEventMutation(formattedData);
-				toast.success(initialData ? 'Событие обновлено!' : 'Событие создано!');
-				router.push('/admin/managerEvents');
-			}
+			await createEventMutation(formattedData);
+			toast.success(initialData ? 'Событие обновлено!' : 'Событие создано!');
+			router.push('/admin/managerEvents');
 		} catch (error) {
-			toast.error(
-				initialData
-					? 'Произошла ошибка при обновлении события'
-					: 'Произошла ошибка при создании события'
-			);
 			console.error('Error creating event:', error);
+			const errorMessage =
+				error instanceof Error ? error.message : 'Произошла неизвестная ошибка';
+			toast.error(errorMessage);
 		}
 	};
 
@@ -156,12 +174,10 @@ export const EventForm = ({
 							onSelectedAdmins={handleAdminChange}
 						/>
 
-						<MutationTextField
-							name='image'
-							label='Ссылка на изображение'
-							register={register}
-							errors={errors}
-							required
+						<FileUploadForm
+							onFileSelect={(file) => setValue('image', file)}
+							error={errors.image?.message}
+							initialImage={initialData?.image as string}
 						/>
 
 						<Box className={s.buttons}>
