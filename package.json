@@ -6,7 +6,7 @@
     "dev": "next dev -p 5080 && blitz dev",
     "build": "next build && blitz build",
     "start": "next start && blitz start",
-    "seed": "blitz db seed --file=server/db/seed.ts --require ts-node/register",
+    "seed": "blitz db seed --file=db/seed.ts --require ts-node/register",
     "stylelint": "next lint && stylelint \"src/**/*.css\"",
     "stylelint:fix": "stylelint \"src/**/*.css\" --fix",
     "lint": "eslint --fix \"./src/**/*.{js,jsx,ts,tsx,json}\"",
@@ -18,8 +18,8 @@
     "test:watch": "vitest"
   },
   "prisma": {
-    "schema": "server/db/schema.prisma",
-    "seed": "node server/db/seed.js"
+    "schema": "db/schema.prisma",
+    "seed": "node db/seed.js"
   },
   "dependencies": {
     "@blitzjs/auth": "^2.1.3",
