@@ -55,7 +55,7 @@ export const CustomButton = ({
 					color: 'var(--white-color)',
 					'&:hover': {
 						background: 'var(--background-gray)',
-						border: '1px solid var(--accent-color)',
+						border: '2px solid var(--accent-color)',
 					},
 				};
 			case 'outlined-on-light':
