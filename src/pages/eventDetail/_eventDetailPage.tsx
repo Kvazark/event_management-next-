@@ -67,12 +67,14 @@ export const EventDetailPage = () => {
 			/>
 			<Suspense fallback={<Loader visible={true} />}>
 				<EventDetail event={event} />
-				<Box className={s.wrapper_block}>
-					<Button
-						label='Зарегистрироваться на событие'
-						view='primary'
-						onClick={handleRegister}
-					/>
+				<Box className={s.btnRegBlock}>
+					<Box>
+						<Button
+							label='Зарегистрироваться на событие'
+							view='primary'
+							onClick={handleRegister}
+						/>
+					</Box>
 				</Box>
 			</Suspense>
 		</Box>

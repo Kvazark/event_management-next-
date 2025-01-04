@@ -14,3 +14,11 @@
 		transform: scale(1.05);
 	}
 }
+
+.btnRegBlock {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	padding: 0 0 60px 0;
+	background: var(--white-color);
+}
