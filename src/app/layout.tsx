@@ -1,5 +1,5 @@
 'use client';
-import React, { StrictMode } from 'react';
+import React, { StrictMode, useEffect, useState } from 'react';
 import { AppLayout } from '@/widgets/AppLayout';
 import '@/app/styles/globals.scss';
 import './layoutStyled.scss';
@@ -8,6 +8,8 @@ import store from '@/app/store';
 import { QueryClient, QueryClientProvider } from '@blitzjs/rpc';
 import { BlitzProvider } from './blitz-client';
 import { ToastContainer } from 'react-toastify';
+import { usePathname } from 'next/navigation';
+import { Loader } from '@/shared/components';
 
 const queryClient = new QueryClient();
 export default function RootLayout({
@@ -15,6 +17,26 @@ export default function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
+	const pathname = usePathname();
+	const [isLoading, setIsLoading] = useState(true);
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+		const handleStart = () => setIsLoading(true);
+		const handleComplete = () => setIsLoading(false);
+
+		if (mounted) {
+			handleStart();
+			setTimeout(() => {
+				handleComplete();
+			}, 500);
+		}
+
+		return () => {
+			setMounted(false);
+		};
+	}, [pathname, mounted]);
 	return (
 		<html lang='en'>
 			<head>
@@ -28,6 +50,7 @@ export default function RootLayout({
 					<Provider store={store}>
 						<QueryClientProvider client={queryClient}>
 							<BlitzProvider>
+								{isLoading && <Loader visible={true} />}
 								<AppLayout>{children}</AppLayout>
 								<ToastContainer
 									position='bottom-right'
