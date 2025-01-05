@@ -14,7 +14,15 @@ export default resolver.pipe(resolver.zod(GetEventById), async ({ id }) => {
 			categories: true,
 			authors: true,
 			participants: true,
-			createdBy: true,
+			createdBy: {
+				select: {
+					id: true,
+					email: true,
+					firstName: true,
+					lastName: true,
+					patronymic: true,
+				},
+			},
 		},
 	});
 
@@ -22,5 +30,22 @@ export default resolver.pipe(resolver.zod(GetEventById), async ({ id }) => {
 		throw new Error('Событие не найдено');
 	}
 
-	return event;
+	let updatedByUser = null;
+	if (event.updatedBy) {
+		updatedByUser = await db.user.findUnique({
+			where: { id: event.updatedBy },
+			select: {
+				id: true,
+				email: true,
+				firstName: true,
+				lastName: true,
+				patronymic: true,
+			},
+		});
+	}
+
+	return {
+		...event,
+		updatedByUser,
+	};
 });

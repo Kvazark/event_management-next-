@@ -29,24 +29,34 @@ export default resolver.pipe(
 			let imageUrl = input.image;
 			if (input.image instanceof File) {
 				imageUrl = await uploadFile(input.image);
-			} else if (
-				typeof input.image === 'string' &&
-				!input.image.startsWith('/uploads/')
-			) {
-				throw new Error('Некорректный формат изображения');
-			}
-			const authors = await db.user.findMany({
-				where: {
-					id: { in: input.authorIds },
-					role: 'ADMIN',
-				},
-			});
-
-			if (authors.length !== input.authorIds.length) {
-				throw new Error('Some of the selected authors are not administrators');
 			}
 
 			const isUpdate = !!input.id;
+
+			if (isUpdate) {
+				const existingEvent = await db.event.findUnique({
+					where: { id: input.id },
+					select: {
+						createdIdBy: true,
+						authors: {
+							select: { id: true },
+						},
+					},
+				});
+
+				if (!existingEvent) {
+					throw new Error('Event not found');
+				}
+
+				const isCreator = existingEvent.createdIdBy === userId;
+				const isAuthor = existingEvent.authors.some(
+					(author) => author.id === userId
+				);
+
+				if (!isCreator && !isAuthor) {
+					throw new Error('Not authorized to edit this event');
+				}
+			}
 
 			const formatData = {
 				formatName: input.formatType,
@@ -66,6 +76,17 @@ export default resolver.pipe(
 				});
 			}
 
+			const authors = await db.user.findMany({
+				where: {
+					id: { in: input.authorIds },
+					role: 'ADMIN',
+				},
+			});
+
+			if (authors.length !== input.authorIds.length) {
+				throw new Error('Some of the selected authors are not administrators');
+			}
+
 			const eventData = {
 				title: input.title,
 				startDate: input.startDate,
@@ -73,20 +94,26 @@ export default resolver.pipe(
 				formatId: format.id,
 				description: input.description,
 				image: imageUrl,
-				createdIdBy: userId,
 			};
 
 			let event;
 			if (isUpdate) {
+				const existingEvent = await db.event.findUnique({
+					where: { id: input.id },
+					select: { createdIdBy: true },
+				});
+
 				event = await db.event.update({
 					where: { id: input.id },
 					data: {
 						...eventData,
+						createdIdBy: existingEvent!.createdIdBy,
+						updatedBy: userId,
 						categories: {
 							set: input.categoryIds.map((id) => ({ id })),
 						},
 						authors: {
-							set: authors.map((author) => ({ id: author.id })),
+							set: input.authorIds.map((id) => ({ id })),
 						},
 					},
 					include: {
@@ -100,11 +127,12 @@ export default resolver.pipe(
 				event = await db.event.create({
 					data: {
 						...eventData,
+						createdIdBy: userId,
 						categories: {
 							connect: input.categoryIds.map((id) => ({ id })),
 						},
 						authors: {
-							connect: authors.map((author) => ({ id: author.id })),
+							connect: input.authorIds.map((id) => ({ id })),
 						},
 					},
 					include: {
@@ -119,7 +147,7 @@ export default resolver.pipe(
 			return event;
 		} catch (error) {
 			console.error('Error during event creation:', error);
-			throw new Error('Error creating event');
+			throw error;
 		}
 	}
 );
