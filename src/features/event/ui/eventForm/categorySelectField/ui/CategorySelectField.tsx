@@ -7,6 +7,8 @@ import {
 	ListItem,
 	ListItemText,
 	ListItemIcon,
+	Popper,
+	Paper,
 } from '@mui/material';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -23,7 +25,6 @@ export const CategorySelectField = ({
 	onLoadMore,
 }: TCategorySelectFieldProps) => {
 	const [inputValue, setInputValue] = useState('');
-	const [searchTerm, setSearchTerm] = useState('');
 	const listRef = useRef<HTMLDivElement>(null);
 
 	const filteredOptions = useMemo(() => {
@@ -41,12 +42,55 @@ export const CategorySelectField = ({
 			!loading &&
 			onLoadMore
 		) {
-			onLoadMore?.();
+			onLoadMore();
 		}
 	};
 
-	const icon = <CheckBoxOutlineBlankIcon fontSize='small' />;
-	const checkedIcon = <CheckBoxIcon fontSize='small' />;
+	const CustomPopper = function (props: any) {
+		return (
+			<Popper
+				{...props}
+				placement='bottom-start'
+				style={{ width: props.style?.width }}
+				modifiers={[
+					{
+						name: 'offset',
+						options: {
+							offset: [0, 8],
+						},
+					},
+				]}>
+				<Paper
+					ref={listRef}
+					onScroll={handleScroll}
+					elevation={8}
+					sx={{
+						backgroundColor: 'var(--background-light-gray)',
+						color: 'var(--text-form)',
+						border: '1px solid var(--custom-gray)',
+						maxHeight: '300px',
+						overflowY: 'auto',
+						mt: 1,
+						'& .MuiAutocomplete-listbox': {
+							backgroundColor: 'var(--background-light-gray)',
+							padding: '8px 0',
+						},
+						'&::-webkit-scrollbar': {
+							width: '6px',
+						},
+						'&::-webkit-scrollbar-track': {
+							background: 'var(--background-gray)',
+						},
+						'&::-webkit-scrollbar-thumb': {
+							background: 'var(--accent-color)',
+							borderRadius: '3px',
+						},
+					}}>
+					{props.children}
+				</Paper>
+			</Popper>
+		);
+	};
 
 	return (
 		<Controller
@@ -71,20 +115,48 @@ export const CategorySelectField = ({
 							setInputValue(newInputValue);
 						}
 					}}
+					PopperComponent={CustomPopper}
 					renderOption={(props, option, { selected }) => (
-						<ListItem {...props} dense>
-							<ListItemIcon>
+						<ListItem
+							{...props}
+							dense
+							sx={{
+								padding: '8px 16px',
+								borderRadius: 1,
+								mb: 0.5,
+								mx: 1,
+								'&:hover': {
+									backgroundColor: 'var(--background-gray)',
+								},
+								'&.Mui-focused': {
+									backgroundColor: 'var(--accent-color-secondary)',
+								},
+								'&.Mui-selected': {
+									backgroundColor: 'var(--accent-color)',
+								},
+							}}>
+							<ListItemIcon sx={{ minWidth: 40 }}>
 								<Checkbox
-									icon={icon}
-									checkedIcon={checkedIcon}
-									style={{ marginRight: 8 }}
+									icon={<CheckBoxOutlineBlankIcon />}
+									checkedIcon={<CheckBoxIcon />}
 									checked={selected}
+									sx={{
+										color: selected
+											? 'var(--accent-color)'
+											: 'var(--custom-gray)',
+										'&.Mui-checked': {
+											color: 'var(--accent-color)',
+										},
+									}}
 								/>
 							</ListItemIcon>
 							<ListItemText
 								primary={option.title}
-								primaryTypographyProps={{
-									color: selected ? 'primary' : 'inherit',
+								sx={{
+									color: 'var(--text-form)',
+									'& .MuiTypography-root': {
+										color: 'var(--text-form)',
+									},
 								}}
 							/>
 						</ListItem>
@@ -93,10 +165,10 @@ export const CategorySelectField = ({
 						<TextField
 							{...params}
 							label={label}
+							placeholder='Поиск категории...'
 							variant='outlined'
 							error={!!errors[name]}
 							helperText={errors[name]?.message as string}
-							onChange={(e) => setSearchTerm(e.target.value)}
 							InputProps={{
 								...params.InputProps,
 								endAdornment: (
@@ -109,17 +181,8 @@ export const CategorySelectField = ({
 							sx={autocompleteStyles}
 						/>
 					)}
-					// PopperComponent={(props) => (
-					// 	<div
-					// 		{...props}
-					// 		ref={listRef}
-					// 		style={{
-					// 			maxHeight: '300px',
-					// 			overflowY: 'auto',
-					// 		}}
-					// 		onScroll={handleScroll}
-					// 	/>
-					// )}
+					filterOptions={(options, { inputValue }) => options}
+					noOptionsText='Категории не найдены'
 				/>
 			)}
 		/>
