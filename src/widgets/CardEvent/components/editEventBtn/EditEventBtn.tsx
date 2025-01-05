@@ -1,16 +1,9 @@
-import {
-	Box,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
-	DialogTitle,
-} from '@mui/material';
+import { Box } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useAppSelector } from '@/shared/hooks/storeHooks';
 import { authUserSelectors } from '@/app/store/slices/user';
-import { Button, Dropdown } from '@/shared/components';
+import { Button, Dropdown, ModalDialog } from '@/shared/components';
 import s from './styled.module.scss';
 import { useMutation } from '@blitzjs/rpc';
 import deleteEvent from '@/features/event/api/mutations/deleteEvent';
@@ -67,12 +60,8 @@ export const EditEventBtn = ({ event, onDelete }: TEditEventBtnProps) => {
 		}
 	};
 
-	const preventEventPropagation = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		e.preventDefault();
-		setIsDeleteDialogOpen(true);
-	};
-
+	const textContent = `Вы уверены, что хотите удалить событие "${event.title}"? Это
+							действие нельзя будет отменить.`;
 	if (showEditBtn)
 		return (
 			<>
@@ -90,34 +79,33 @@ export const EditEventBtn = ({ event, onDelete }: TEditEventBtnProps) => {
 						]}
 					/>
 				</Box>
-				<Dialog
-					open={isDeleteDialogOpen}
+				<ModalDialog
+					isOpen={isDeleteDialogOpen}
 					onClose={() => setIsDeleteDialogOpen(false)}
-					onClick={preventEventPropagation}
-					aria-labelledby='delete-dialog-title'
-					aria-describedby='delete-dialog-description'>
-					<DialogTitle id='delete-dialog-title'>
-						Подтвердите удаление
-					</DialogTitle>
-					<DialogContent>
-						<DialogContentText id='delete-dialog-description'>
-							Вы уверены, что хотите удалить событие "{event.title}"? Это
-							действие нельзя будет отменить.
-						</DialogContentText>
-					</DialogContent>
-					<DialogActions>
-						<Button
-							view='outlined-on-dark'
-							onClick={() => setIsDeleteDialogOpen(false)}
-							label='Отменить'
-						/>
-						<Button
-							view='primary'
-							onClick={handleConfirmDelete}
-							label='Удалить'
-						/>
-					</DialogActions>
-				</Dialog>
+					title='Подтвердите удаление'
+					content={
+						<Box
+							sx={{
+								color: 'var(--text-secondary)',
+							}}>
+							{textContent}
+						</Box>
+					}
+					buttons={
+						<>
+							<Button
+								view='outlined-on-dark'
+								onClick={() => setIsDeleteDialogOpen(false)}
+								label='Отменить'
+							/>
+							<Button
+								view='primary'
+								onClick={handleConfirmDelete}
+								label='Удалить'
+							/>
+						</>
+					}
+				/>
 			</>
 		);
 	else {

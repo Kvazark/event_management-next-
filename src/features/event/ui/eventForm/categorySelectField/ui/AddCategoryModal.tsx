@@ -1,14 +1,7 @@
-import {
-	Dialog,
-	DialogTitle,
-	DialogContent,
-	Box,
-	IconButton,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Box } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { MutationTextField } from '@/shared/components/mutationsComponent';
-import { Button } from '@/shared/components';
+import { Button, ModalDialog } from '@/shared/components';
 import { toast } from 'react-toastify';
 import { useMutation } from '@blitzjs/rpc';
 import createCategory from '@/features/event/api/mutations/createCategory';
@@ -60,33 +53,11 @@ export const AddCategoryModal = ({
 	};
 
 	return (
-		<Dialog
-			open={isOpen}
+		<ModalDialog
+			isOpen={isOpen}
 			onClose={handleClose}
-			maxWidth='sm'
-			fullWidth
-			PaperProps={{
-				sx: {
-					backgroundColor: 'var(--background-light-gray)',
-					color: 'var(--white-color)',
-				},
-			}}
-			onClick={(e) => e.stopPropagation()}>
-			<DialogTitle>
-				Создать новую категорию
-				<IconButton
-					aria-label='close'
-					onClick={handleClose}
-					sx={{
-						position: 'absolute',
-						right: 8,
-						top: 8,
-						color: 'var(--white-color)',
-					}}>
-					<CloseIcon />
-				</IconButton>
-			</DialogTitle>
-			<DialogContent>
+			title='Создать новую категорию'
+			content={
 				<Box
 					component='form'
 					onSubmit={handleFormSubmit}
@@ -113,7 +84,7 @@ export const AddCategoryModal = ({
 						/>
 					</Box>
 				</Box>
-			</DialogContent>
-		</Dialog>
+			}
+		/>
 	);
 };
